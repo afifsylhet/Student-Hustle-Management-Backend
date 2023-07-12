@@ -18,11 +18,15 @@ app.use(fileUpload());
 const border = require("./routes/borderRoute");
 const user = require("./routes/userRoute");
 const room = require("./routes/roomRoute");
+const income = require("./routes/incomeRoute");
+const expence = require("./routes/expenceRoute");
 
 
 app.use("/api/v1", border);
 app.use("/api/v1", user);
 app.use("/api/v1", room);
+app.use("/api/v1", income);
+app.use("/api/v1", expence);
 
 // Middleware for Error
 app.use(errorMiddleware);
