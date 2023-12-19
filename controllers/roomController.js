@@ -1,16 +1,18 @@
 const Room = require("../models/roomModel");
 const ErrorHandler = require("../utils/errorhandelr");
 const catchAsyncErrors = require("../middleware/catchAsyncError");
+const ApiFeatures = require("../utils/apifeartures");
 
 // add room
 exports.addRoom = catchAsyncErrors(async (req, res, next) => {
-  const { roomNumber, floorNumber, roomType, roomStatus } = req.body;
+  const { roomNumber, floorNumber, roomType, roomStatus, entryBy } = req.body;
 
   const room = await Room.create({
     roomNumber,
     floorNumber,
     roomType,
     roomStatus,
+    entryBy,
     user: req.user._id,
   });
 
@@ -35,13 +37,21 @@ exports.getSingleRoomDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get All Room --Admin
 exports.getAllRooms = catchAsyncErrors(async (req, res, next) => {
-  const rooms = await Room.find();
-
+  const resultPerPage = 8;
+  const roomCount = await Room.countDocuments();
+  const apiFeatures = new ApiFeatures(Room.find(), req.query)
+  .roomSearch()
+  .filter()
+  .pagination(resultPerPage);
+  const rooms = await apiFeatures.query;
   res.status(200).json({
     success: true,
     rooms,
+    roomCount,
+    resultPerPage,
   });
 });
+
 
 // Update Room Status --Admin
 exports.updateRoom = catchAsyncErrors(async (req, res, next) => {

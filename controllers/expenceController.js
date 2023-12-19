@@ -1,15 +1,18 @@
 const Expence = require("../models/expneceModel");
 const ErrorHandler = require("../utils/errorhandelr");
 const catchAsyncErrors = require("../middleware/catchAsyncError");
+const ApiFeatures = require("../utils/apifeartures");
 
 // add expence
 exports.addExpence = catchAsyncErrors(async (req, res, next) => {
-  const { amount, sector, expenceName } = req.body;
+  const { totalAmount, category, expenseDetails, entryBy } = req.body;
+
 
   const expence = await Expence.create({
-    amount, 
-    sector, 
-    expenceName,
+    totalAmount, 
+    category, 
+    expenseDetails,
+    entryBy,
     user: req.user._id,
   });
 
@@ -34,24 +37,36 @@ exports.getSingleExpenceDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get All expences --Admin
 exports.getAllExpences = catchAsyncErrors(async (req, res, next) => {
-  const expences = await Expence.find();
+  const resultPerPage = 8;
+  const expenceCount = await Expence.countDocuments();
+  const apiFeatures = new ApiFeatures(Expence.find(), req.query)
+  .expenceSearch()
+  .filter()
+  .pagination(resultPerPage);
+  const expences = await apiFeatures.query;
 
   res.status(200).json({
     success: true,
     expences,
+    expenceCount,
+    resultPerPage,
   });
 });
 
 // Update expence  --Admin
 exports.updateExpence = catchAsyncErrors(async (req, res, next) => {
-  const expence = await Expence.findById(req.params.id);
 
+  const expence = await Expence.findById(req.params.id);
   if (!expence) {
     return next(new ErrorHandler("expence not found with this Id", 404));
   }
-  expence.amount = req.body.amount;
-  expence.sector = req.body.sector;
-  expence.expenceName = req.body.expenceName;
+
+  expence.totalAmount = req.body.totalAmount;
+  expence.category = req.body.category;
+  expence.expenseDetails = req.body.expenseDetails;
+  expence.entryBy = req.body.entryBy;
+  expence.user = req.body.user;
+
 
   expence.updatedAt = Date.now();
 

@@ -19,7 +19,7 @@ const borderSchema = new mongoose.Schema({
     type: Date,
     required: [true, "Please enter border's date of birth"],
   },
-  gendar: {
+  gender: {
     type: String,
     required: [true, "Please enter border's gendar"]
   },
@@ -74,6 +74,7 @@ const borderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+
   createdAt: {
     type: Date,
     default: Date.now,

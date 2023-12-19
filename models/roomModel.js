@@ -17,6 +17,10 @@ const roomSchema = new mongoose.Schema({
     type: String,
     default: "Empty",
   },
+  entryBy: {
+    type: String,
+    required: true,
+  },
  
   user: {
     type: mongoose.Schema.ObjectId,

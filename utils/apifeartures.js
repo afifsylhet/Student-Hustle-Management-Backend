@@ -17,6 +17,42 @@ class ApiFeatures {
     return this;
   }
 
+  roomSearch() {
+    const keyword = this.queryStr.keyword
+      ? {
+        roomNumber: {
+            $regex: this.queryStr.keyword, // MongoDB regular expression
+            $options: "i", // i for case-insensitive,
+          },
+        }
+      : {};
+    this.query = this.query.find({ ...keyword });
+    return this;
+  }
+  incomeSearch() {
+    const keyword = this.queryStr.keyword
+      ? {
+          borderId: {
+            $regex: this.queryStr.keyword, // MongoDB regular expression
+            $options: "i", // i for case-insensitive,
+          },
+        }
+      : {};
+    this.query = this.query.find({ ...keyword });
+    return this;
+  }
+
+  expenceSearch() {
+    const keyword = this.queryStr.keyword;
+
+    if (keyword) {
+        this.query = this.query.find({ _id: keyword });
+    }
+
+    return this;
+}
+
+
   filter() {
     const queryCopy = { ...this.queryStr };
     //removing some fields

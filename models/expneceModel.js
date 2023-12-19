@@ -1,15 +1,19 @@
 const mongoose = require("mongoose");
 
 const expenceSchema = new mongoose.Schema({
-  amount: {
+  totalAmount: {
     type: Number,
     required: true,
   },
-  sector: {
+  category: {
     type: String,
     required: true,
   },
-  expenceName: {
+  expenseDetails: {
+    type: String,
+    required: true,
+  },
+  entryBy: {
     type: String,
     required: true,
   },

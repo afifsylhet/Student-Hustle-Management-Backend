@@ -1,16 +1,19 @@
 const Income = require("../models/incomeModel");
 const ErrorHandler = require("../utils/errorhandelr");
 const catchAsyncErrors = require("../middleware/catchAsyncError");
+const ApiFeatures = require("../utils/apifeartures");
 
 // add income
 exports.addInocme = catchAsyncErrors(async (req, res, next) => {
-  const { deposit, developmentFee, monthlyFee, borderType } = req.body;
+  const { deposit, developmentFee, monthlyFee, paymentType, borderId, borderName } = req.body;
 
   const income = await Income.create({
+    borderName,
+    borderId,
     deposit, 
     developmentFee,
     monthlyFee,
-    borderType,
+    paymentType,
     user: req.user._id,
   });
 
@@ -35,11 +38,18 @@ exports.getSingleIncomeDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get All incomes --Admin
 exports.getAllIncomes = catchAsyncErrors(async (req, res, next) => {
-  const incomes = await Income.find();
-
+  const resultPerPage = 8;
+  const incomeCount = await Income.countDocuments();
+  const apiFeatures = new ApiFeatures(Income.find(), req.query)
+  .incomeSearch()
+  .filter()
+  .pagination(resultPerPage);
+  const incomes = await apiFeatures.query;
   res.status(200).json({
     success: true,
     incomes,
+    incomeCount,
+    resultPerPage,
   });
 });
 

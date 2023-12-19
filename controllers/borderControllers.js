@@ -33,7 +33,7 @@ exports.getAllBorders = catchAsyncError(async (req, res) => {
 // Update border -- Admin
 exports.updateBorder = catchAsyncError(async (req, res, next) => {
   let border = await Border.findById(req.params.id);
-
+ console.log(req.body , req.params.id)
   if (!border) {
     return next(new ErrorHandler("Border Not found", 404));
   }

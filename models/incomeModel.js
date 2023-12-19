@@ -11,9 +11,17 @@ const incomeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  borderType: {
+  paymentType: {
     type: String,
     required: true, 
+  },
+  borderId: {
+    type: String,
+    required: true,
+  },
+  borderName: {
+    type: String,
+    required: true,
   },
   user: {
     type: mongoose.Schema.ObjectId,
